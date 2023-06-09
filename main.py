@@ -4,7 +4,6 @@ import time
 import sqlite3 as sq
 from datetime import datetime
 
-
 driver = webdriver.Chrome()
 driver.get("https://cs2plg.com/ru/crash")
 
@@ -31,6 +30,9 @@ while True:
         if(last_item != now_item):
             values.append(now_item)
 
+            now = datetime.now()
+            current_time = now.strftime("%H:%M:%S")
+
             for item in bet_info:
                 value = item.find('span').text
                 deposit += int(value)
@@ -43,5 +45,12 @@ while True:
                 value = item.text
                 profit -= int(str(value)[1:])
 
+            cur.execute("INSERT INTO casino_hack (coeff, time, deposit, profit) VALUES (?,?,?,?);", (now_item, current_time, deposit, profit))
+            conn.commit()
+
+
         last_item = item_list[0].li.span.text
         time.sleep(1)
+
+
+
